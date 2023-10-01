@@ -50,10 +50,11 @@ def refresh_token(refresh_token: str):
 
 
 def get_user(user_id: str):
-    headers = {"authorization": f"BOT {BOT_TOKEN}"}
+    headers = {"Authorization": f"Bot {BOT_TOKEN}"}
     response = requests.get(
         f"https://discord.com/api/v10/users/{user_id}", headers=headers
     )
+    print(response.json())
     return response.json()
 
 
@@ -67,6 +68,6 @@ def refresh(item: RefreshTokenRequestItem):
     return refresh_token(item.refresh_token)
 
 
-@app.get("/api/users/")
+@app.post("/api/users/")
 def users(item: GetUserRequestItem):
     return get_user(item.user_id)
