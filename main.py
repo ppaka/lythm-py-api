@@ -9,6 +9,7 @@ load_dotenv()
 API_ENDPOINT = "https://discord.com/api/v10"
 CLIENT_ID = os.environ.get("CLIENT_ID")
 CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 REDIRECT_URI = "http://localhost:8686"
 app = FastAPI()
 
@@ -16,8 +17,13 @@ app = FastAPI()
 class ExchangeCodeRequestItem(BaseModel):
     code: str
 
+
 class RefreshTokenRequestItem(BaseModel):
     refresh_token: str
+
+
+class GetUserRequestItem(BaseModel):
+    user_id: str
 
 
 def exchange_code(code: str):
@@ -43,6 +49,14 @@ def refresh_token(refresh_token: str):
     return response.json()
 
 
+def get_user(user_id: str):
+    headers = {"authorization": f"BOT {BOT_TOKEN}"}
+    response = requests.get(
+        f"https://discord.com/api/v10/users/{user_id}", headers=headers
+    )
+    return response.json()
+
+
 @app.post("/api/exchange/")
 def exchange(item: ExchangeCodeRequestItem):
     return exchange_code(item.code)
@@ -51,3 +65,8 @@ def exchange(item: ExchangeCodeRequestItem):
 @app.post("/api/refresh/")
 def refresh(item: RefreshTokenRequestItem):
     return refresh_token(item.refresh_token)
+
+
+@app.post("/api/users/")
+def users(item: GetUserRequestItem):
+    return get_user(item.user_id)
