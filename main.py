@@ -67,6 +67,6 @@ def refresh(item: RefreshTokenRequestItem):
     return refresh_token(item.refresh_token)
 
 
-@app.post("/api/users/")
+@app.get("/api/users/")
 def users(item: GetUserRequestItem):
     return get_user(item.user_id)
